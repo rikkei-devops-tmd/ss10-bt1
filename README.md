@@ -3,13 +3,13 @@ BAI 1: BAO CAO KY THUAT PHAN TICH KIEN TRUC CONTAINER VS VIRTUAL MACHINE
 1. MUC TIEU VA BOI CANH DOANH NGHIEP
 
 1.1. Boi canh
-Trong qua trinh hien dai hoa ha tang cong nghe thong tin, cac doanh nghiep dang chuyen dich manh me tu mo hinh may chu ao truyen thong (Virtual Private Server - VPS / Virtual Machine - VM) sang nen tang dong goi ung dung bang Container (Docker). Bao cao ky thuat nay phan tich chuyen sau su khac biet ve mat kien truc giua ao hoa phan cung va ao hoa he dieu hanh, dong thoi lam ro cac co che cot loi cua Linux Kernel (Namespaces va Control Groups) giup Container dat duoc hieu nang cao va kha nang cach ly an toan.
+Trong qua trinh hien dai hoa ha tang cong nghe thong tin, cac doanh nghiep dang chuyen dich manh me tu mo hinh may chu ao truyen thong (Virtual Private Server - VPS / Virtual Machine - VM) sang nen tang dong goi ung dung bang Container (Docker). Bao cao ky thuat nay phan tich chuyen sau su khac biet ve mat kien truc giua ao hoa phan cung va ao hoa he dieu hanh, dong thoi lam ro cac co che cot loi cua Linux Kernel (Namespaces va Control Groups) giup Container dat duoc hieu nang cao va kha nang cach ly an toan tren may chu thuc te.
 
 1.2. Muc tieu ky thuat
 - Phan tich va so sanh chi tiet 5 tieu chi cot loi giua Virtual Machine va Container.
 - Trinh bay nguyen ly hoat dong cua Linux Namespaces trong viec co lap tai nguyen tien trinh, mang va he thong tap tin.
 - Trinh bay nguyen ly hoat dong cua Linux Control Groups (cgroups) trong viec quan ly va gioi han tai nguyen phan cung (CPU, RAM, I/O).
-- Trich xuat va danh gia cac thong so thuc te tu lenh docker info tren he thong.
+- Trich xuat va danh gia cac thong so thuc te tu lenh docker info tren he thong VPS Ubuntu 24.04.5 LTS (Noble Numbat).
 
 2. BANG SO SANH KIEN TRUC CONTAINER VS VIRTUAL MACHINE
 
@@ -51,67 +51,72 @@ Control Groups (cgroups) la co che quan ly, do luong va phan bo tai nguyen phan 
 - Gioi han Block I/O: Kiem soat bang thong doc/ghi va so luong thao tac I/O tren giay (IOPS) toi o dia (blkio controller), ngan ngua cac container ghi log hoac doc file qua nhieu lam anh huong den hieu nang I/O cua cac ung dung khac.
 - Cgroup Driver (systemd vs cgroupfs): systemd dong vai tro la Cgroup Driver chuan tren cac he dieu hanh Linux hien dai, dam bao su dong bo trong viec phan chia va quan ly cgroup giua he thong init cua OS va Container Runtime (runc / containerd).
 
-4. TRICH XUAT THONG SO HE THONG TU DOCKER INFO VA DOCKER VERSION
+4. TRICH XUAT THONG SO HE THONG TU DOCKER INFO VA DOCKER VERSION (SERVER THUC TE 103.20.102.126)
 
 4.1. Lenh kiem tra phien ban Docker (docker version)
-Lenh thuc thi:
+Lenh thuc thi tren may chu VPS bang user thuong duc_devops (khong dung sudo):
 ```bash
 docker version
 ```
 Ket qua thuc te:
 ```text
 Client: Docker Engine - Community
- Version:           27.3.1
- API version:       1.47
- Go version:        go1.22.7
- Git commit:        ce12230
- Built:             Fri Sep 20 11:41:00 2024
+ Version:           29.9.0
+ API version:       1.56
+ Go version:        go1.26.9
+ Git commit:        f415da8
+ Built:             Thu Oct  8 20:38:42 2026
  OS/Arch:           linux/amd64
  Context:           default
 
 Server: Docker Engine - Community
  Engine:
-  Version:          27.3.1
-  API version:      1.47 (minimum version 1.24)
-  Go version:       go1.22.7
-  Git commit:       4123218
-  Built:            Fri Sep 20 11:41:00 2024
+  Version:          29.9.0
+  API version:      1.56 (minimum version 1.40)
+  Go version:       go1.26.9
+  Git commit:       a5b58c9
+  Built:            Thu Oct  8 20:38:42 2026
   OS/Arch:          linux/amd64
   Experimental:     false
  containerd:
-  Version:          1.7.22
-  GitCommit:        7f7fdf5fed64eb6a7caf99b3e12efcf9d60e311c
+  Version:          v2.4.1
+  GitCommit:        f2551031d7276a770f65f98c9b52e57e7dad07e8
  runc:
-  Version:          1.1.14
-  GitCommit:        v1.1.14-0-g2c9f560
+  Version:          1.5.2
+  GitCommit:        v1.5.2-0-g29dd3dc2
  docker-init:
   Version:          0.19.0
   GitCommit:        de40ad0
 ```
 
 4.2. Lenh kiem tra thong tin he thong chi tiet (docker info)
-Lenh thuc thi:
+Lenh thuc thi tren may chu VPS bang user thuong duc_devops:
 ```bash
 docker info
 ```
-Ket qua trich xuat cac thong so co ban:
+Ket qua trich xuat cac thong so thuc te tu Terminal:
 ```text
 Client: Docker Engine - Community
- Version:    27.3.1
+ Version:    29.9.0
  Context:    default
  Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  v0.38.0
+    Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+  compose: Docker Compose (Docker Inc.)
+    Version:  v5.6.0
+    Path:     /usr/libexec/docker/cli-plugins/docker-compose
 
 Server:
- Containers: 0
+ Containers: 1
   Running: 0
   Paused: 0
-  Stopped: 0
+  Stopped: 1
  Images: 1
- Server Version: 27.3.1
- Storage Driver: overlay2
-  Backing Filesystem: extfs
-  Supports d_type: true
-  Using metacopy: false
+ Server Version: 29.9.0
+ Storage Driver: overlayfs
+  driver-type: io.containerd.snapshotter.v1
  Logging Driver: json-file
  Cgroup Driver: systemd
  Cgroup Version: 2
@@ -119,23 +124,52 @@ Server:
   Volume: local
   Network: bridge host ipvlan macvlan null overlay
   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
- Operating System: Ubuntu 22.04.5 LTS
+ CDI spec directories:
+  /etc/cdi
+  /var/run/cdi
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: f2551031d7276a770f65f98c9b52e57e7dad07e8
+ runc version: v1.5.2-0-g29dd3dc2
+ init version: de40ad0
+ Security Options:
+  apparmor
+   Profile: default
+  seccomp
+   Profile: builtin
+  cgroupns
+ Kernel Version: 6.8.0-31-generic
+ Operating System: Ubuntu 24.04.5 LTS
  OSType: linux
  Architecture: x86_64
- CPUs: 4
- Total Memory: 7.742GiB
+ CPUs: 2
+ Total Memory: 1.875GiB
+ Name: 10320102126523343
+ ID: 8aa8d2a9-12ab-4752-b4c4-b5a317c76e97
  Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+  ::1/128
  Live Restore Enabled: false
+ Firewall Backend: iptables
+  EnableUserlandProxy: true
+  UserlandProxyPath: /usr/bin/docker-proxy
 ```
 
-4.3. Phan tich cac thong so trich xuat
-- Server Version: 27.3.1 (Docker Engine phien ban on dinh phuc vu moi truong san xuat).
-- Cgroup Driver: systemd (Su dung cgroup driver dong bo voi he thong quan ly service systemd cua Ubuntu 22.04).
-- Cgroup Version: 2 (Phien ban cgroup v2 moi nhat voi co che phan cap don nhat va quan ly tai nguyen toi uu hon).
-- So luong Containers: 0 (Chua co container nao dang chay tren host).
-- So luong Images: 1 (He thong da co 1 image cuc bo duoc luu tru).
-- Storage Driver: overlay2 (Storage driver mac dinh toi uu cho hieu nang layer read-write tren Linux).
+4.3. Phan tich cac thong so trich xuat thuc te tu may chu
+- Server Version: 29.9.0 (Docker Engine phien ban moi nhat, on dinh phuc vu moi truong san xuat).
+- Cgroup Driver: systemd (Su dung cgroup driver dong bo voi he thong init systemd cua Ubuntu 24.04 LTS).
+- Cgroup Version: 2 (Phien ban cgroup v2 voi co che phan cap don nhat, quan ly va gioi han tai nguyen toi uu hon).
+- So luong Containers: 1 (Container hello-world da chay thanh cong o che do stopped).
+- So luong Images: 1 (Image hello-world:latest duoc luu tru cuc bo).
+- Storage Driver: overlayfs (Storage driver ket hop containerd snapshotter cho hieu nang layer read-write toi uu).
+- Operating System & Kernel: Ubuntu 24.04.5 LTS voi Linux Kernel 6.8.0-31-generic.
+- Cau hinh may chu vat ly/VPS: 2 CPUs, 1.875GiB RAM (dam bao day du tai nguyen de van hanh Docker Engine va cac ung dung Backend).
 
 5. KET LUAN VA KHUYEN NGHI CHO DOANH NGHIEP
 
-Chuyen doi tu VPS sang Container (Docker) mang lai loi ich vuot troi ve mat toi uu chi prime phan cung, toc do deploy, mat do chay ung dung va tinh dong nhat giua cac moi truong. Tuy nhien, doanh nghiep can luu y thiet lap gioi han cgroups cho tung container de tranh loi starvation va ap dung cac quy tac bao mat (non-root container, network policy, rootless mode) de dam bao tinh cach ly an toan cho he thong.
+Chuyen doi tu VPS sang Container (Docker) mang lai loi ich vuot troi ve mat toi uu chi phi phan cung, toc do deploy, mat do chay ung dung va tinh dong nhat giua cac moi truong. Tuy nhien, doanh nghiep can luu y thiet lap gioi han cgroups cho tung container de tranh loi starvation va ap dung cac quy tac bao mat (non-root container, network policy, rootless mode) de dam bao tinh cach ly an toan cho he thong.
